@@ -93,6 +93,9 @@ class GDImageUp implements FilesUp
 			
 			return FALSE;
 		}
+		
+		$MIME = explode ( ';', ( new finfo ( FILEINFO_MIME ) ) -> file( $_FILES[$this -> _key]['tmp_name'] ) )[0];
+		
 		if ( !file_exists ( $this -> _directory ) )
 		{
 			$this -> _E['dir'] = 'Invalid is directory';
@@ -101,13 +104,13 @@ class GDImageUp implements FilesUp
 		{
 			$this -> _E['property_type'] = 'Denied access Mime type in: ' . implode ( ', ', $D );
 		}
-		elseif ( !in_array ( $_FILES[$this -> _key]['type'], ( $this -> _mime_type ?: self::MIME_TYPE ) ) )
+		elseif ( !in_array ( $MIME, ( $this -> _mime_type ?: self::MIME_TYPE ) ) )
 		{
 			$this -> _E['type'] = 'Invalid Mime type File';
 		}
 		else
 		{
-			switch ( $_FILES[$this -> _key]['type'] )
+			switch ( $MIME )
 			{
 				case 'image/png':
 					$IGD = ImageCreateFromPNG ( $_FILES[$this -> _key]['tmp_name'] );
@@ -139,7 +142,7 @@ class GDImageUp implements FilesUp
 		
 		ImageCopyResampled ( $IMG, $IGD, 0, 0, 0, 0, $SX, $SY, $SX, $SY );
 		
-		switch ( $_FILES[$this -> _key]['type'] )
+		switch ( $MIME )
 		{
 			case 'image/png':
 				$NAME = $this -> _name . '.png';
