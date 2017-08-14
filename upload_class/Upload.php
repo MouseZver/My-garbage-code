@@ -158,9 +158,11 @@ class GDImageUp implements FilesUp
 			break;
 		}
 		
+		$this -> _name = $NAME;
+		
 		ImageDestroy ( $IMG );
 		
-		return $NAME;
+		return TRUE;
 	}
 }
 
