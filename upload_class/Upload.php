@@ -100,7 +100,7 @@ class GDImageUp implements FilesUp
 		{
 			$this -> _E['dir'] = 'Invalid is directory';
 		}
-		if ( count ( array_diff ( $this -> _mime_type, self::MIME_TYPE ) ) > 0 )
+		if ( count ( $D = array_diff ( $this -> _mime_type, self::MIME_TYPE ) ) > 0 )
 		{
 			$this -> _E['property_type'] = 'Denied access Mime type in: ' . implode ( ', ', $D );
 		}
