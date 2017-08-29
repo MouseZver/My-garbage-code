@@ -19,7 +19,7 @@ class GDImageUp
 ```
 
 Методы:
-
+***
 ```PHP
 GDImageUp::setMimeType( string $string [, string $... ] )
 ```
@@ -28,16 +28,12 @@ GDImageUp::setMimeType( string $string [, string $... ] )
 $GD = new GDImageUp
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
 ```
-
-
-
+***
 ```PHP
 GDImageUp::ImageSize ( int $W [, int $H ] )
 ```
 Установка максимального разрешенного размера изображения width / height. По дефолту максимальное разрешение загружаемого изображения составляет 200 / 200. Возвращает объект.
-
-
-
+***
 ```PHP
 GDImageUp::SaveDirectory( string $Directory )
 ```
