@@ -18,7 +18,7 @@ class GDImageUp
 }
 ```
 
-Методы:
+### Методы:
 ***
 ```PHP
 GDImageUp::setMimeType( string $string [, string $... ] )
