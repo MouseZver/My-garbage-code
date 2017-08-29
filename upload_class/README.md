@@ -29,10 +29,14 @@ $GD = new GDImageUp
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
 ```
 
+
+
 ```PHP
 GDImageUp::ImageSize ( int $W [, int $H ] )
 ```
 Установка максимального разрешенного размера изображения width / height. По дефолту максимальное разрешение загружаемого изображения составляет 200 / 200. Возвращает объект.
+
+
 
 ```PHP
 GDImageUp::SaveDirectory( string $Directory )
@@ -41,20 +45,28 @@ GDImageUp::SaveDirectory( string $Directory )
 ## Замечание:
 Данный метод является одним из важнейших компонентов, при его отсутствии создается ошибка Invalid is directory.
 
+
+
 ```PHP
 GDImageUp::SaveName( string $name )
 ```
 Задает имя загружаемого файла. Возвращает объект.
+
+
 
 ```PHP
 GDImageUp::ErrorMessage()
 ```
 Вывод ошибок.
 
+
+
 ```PHP
 GDImageUp::__toString()
 ```
 Выводит имя файла с его расширением.
+
+
 
 ```PHP
 GDImageUp::SaveFile()
