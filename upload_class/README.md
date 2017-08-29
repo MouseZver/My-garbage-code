@@ -38,18 +38,15 @@ GDImageUp::ImageSize ( int $W [, int $H ] )
 GDImageUp::SaveDirectory( string $Directory )
 ```
 Сохранение изображений по указанному пути. Возвращает объект.
-###### Замечание:
+###### h6 Замечание:
+--------------
 Данный метод является одним из важнейших компонентов, при его отсутствии создается ошибка Invalid is directory.
-
-
-
+***
 ```PHP
 GDImageUp::SaveName( string $name )
 ```
 Задает имя загружаемого файла. Возвращает объект.
-
-
-
+***
 ```PHP
 GDImageUp::ErrorMessage()
 ```
