@@ -8,5 +8,6 @@ $GD = new GDImageUp
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
 ```
 Замечание: Все перечисления ведутся через запятую в string формате.
-####
-dfsg
+####dfsg
+
+asd
