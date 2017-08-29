@@ -27,11 +27,11 @@ class GDImageUp implements FilesUp
 		$_name,
 		$_E = [];
 	
-	public function __construct ( string $KEY, $SIZE = FALSE )
+	public function __construct ( string $KEY, int $SIZE = 0 )
 	{
 		$this -> _key = $KEY;
 		$this -> _name = basename ( $_FILES[$KEY]['name'] ?? 'NoneName' );
-		$this -> _max_size_img = ( $SIZE ?? self::MAX_SIZE_IMG );
+		$this -> _max_size_img = ( $SIZE === 0 ? self::MAX_SIZE_IMG : $SIZE );
 	}
 	public function setMimeType( ...$A )
 	{
@@ -62,7 +62,7 @@ class GDImageUp implements FilesUp
 	{
 		return $this -> _E;
 	}
-	public function FileName(): string
+	public function __toString(): string
 	{
 		return $this -> _name;
 	}
