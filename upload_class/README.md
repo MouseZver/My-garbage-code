@@ -6,4 +6,5 @@
 ```PHP
 $GD = new GDImageUp
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
-```PHP
+```
+Замечание: Все перечисления ведутся через запятую в string формате.
