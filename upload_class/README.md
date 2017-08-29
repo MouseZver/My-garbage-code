@@ -6,10 +6,10 @@ class GDImageUp
 	const MAX_SIZE_IMG
 	const MIME_TYPE
 	
-	public function __construct ( string $string, int $int = 0 )
+	public function __construct ( string $string, int $int )
 	public function setMimeType( ...$string ): GDImageUp
 	public function ImageSize( int $W, int $H ): GDImageUp
-	public function SaveDirectory( string $DIR ): GDImageUp
+	public function SaveDirectory( string $string ): GDImageUp
 	public function SaveName( string $string ): GDImageUp
 	public function ErrorMessage(): array
 	public function __toString(): string
