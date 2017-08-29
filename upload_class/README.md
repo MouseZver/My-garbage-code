@@ -14,7 +14,11 @@ class GDImageUp
 	public function SaveFile( void ): bool
 }
 ```
-
+```PHP
+GDImageUp::__construct ( string $string, int $int )
+```
+Устанавливается ключ указанный в атрибуте name html тега input и вес файла.
+***
 ### Методы:
 ***
 ```PHP
