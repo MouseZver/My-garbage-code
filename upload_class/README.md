@@ -3,9 +3,6 @@
 ```PHP
 class GDImageUp
 {
-	const MAX_SIZE_IMG
-	const MIME_TYPE
-	
 	public function __construct ( string $string, int $int )
 	public function setMimeType( ...$string ): GDImageUp
 	public function ImageSize( int $W, int $H ): GDImageUp
