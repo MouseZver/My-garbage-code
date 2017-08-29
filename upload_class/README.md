@@ -19,7 +19,7 @@ class GDImageUp
 ```
 
 Методы:
-- ```PHP GDImageUp::setMimeType( string $string [, string $... ] ) ``` — Установка типов изображений на допустимость загрузки. Возвращает объект 
+```PHP GDImageUp::setMimeType( string $string [, string $... ] ) ``` — Установка типов изображений на допустимость загрузки. Возвращает объект 
 ```PHP
 $GD = new GDImageUp
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
