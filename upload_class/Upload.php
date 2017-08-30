@@ -174,7 +174,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 	{
 		var_dump ( $G -> ErrorMessage() );
 	}
-	echo $G -> FileName();
+	echo $G;
 }
 ?>
 <form enctype="multipart/form-data" method="post" action="/Upload.php">
