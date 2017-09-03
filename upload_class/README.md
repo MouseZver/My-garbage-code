@@ -56,6 +56,9 @@ GDImageUp::ErrorMessage()
 GDImageUp::__toString()
 ```
 Выводит имя файла с его расширением.
+```PHP
+echo $GD;
+```
 ***
 ```PHP
 GDImageUp::SaveFile()
