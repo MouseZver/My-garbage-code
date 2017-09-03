@@ -2,15 +2,7 @@
 
 error_reporting ( E_ALL );
 
-interface FilesUp
-{
-	public function SaveDirectory( string $DIRECTORY );	# Директория для сохранения файла
-	public function SaveFile(): bool;				# Функция валидации и сохранения файла
-	public function FileName(): string;				# Вывод имя файла с расширением
-	public function ErrorMessage(): array;			# Вывод ошибок
-}
-
-class GDImageUp implements FilesUp
+class GDImageUp
 {
 	# Максимальный размер файла
 	const MAX_SIZE_IMG = ( 1024 * 1024 * 5 );
