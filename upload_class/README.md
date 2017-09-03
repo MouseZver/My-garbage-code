@@ -26,7 +26,7 @@ GDImageUp::setMimeType( string $string [, string $... ] )
 ```
 Установка типов изображений на допустимость загрузки. Возвращает объект. Если этот метот опущен, то берутся стандартные типы загружаемых файлов.
 ```PHP
-$GD = new GDImageUp
+$GD = new GDImageUp;
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
 ```
 ***
