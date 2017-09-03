@@ -17,7 +17,7 @@ class GDImageUp
 ```PHP
 GDImageUp::__construct ( string $string, int $int )
 ```
-Устанавливается ключ указанный в атрибуте name html тега input и вес файла.
+Устанавливается ключ указанный в атрибуте name html тега input и вес файла ( в байтах )int .
 ***
 ### Методы:
 ***
