@@ -29,6 +29,7 @@ GDImageUp::setMimeType( string $string [, string $... ] )
 $GD = new GDImageUp;
 $GD -> setMimeType( 'image/jpeg' ); # Разрешили только тип jpeg
 ```
+###### Замечание: Не путайте тип с расширением файла.
 ***
 ```PHP
 GDImageUp::ImageSize ( int $W [, int $H ] )
