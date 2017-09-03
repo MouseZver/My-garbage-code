@@ -25,26 +25,26 @@ class GDImageUp
 		$this -> _name = basename ( $_FILES[$KEY]['name'] ?? 'NoneName' );
 		$this -> _max_size_img = ( $SIZE === 0 ? self::MAX_SIZE_IMG : $SIZE );
 	}
-	public function setMimeType( ...$A )
+	public function setMimeType( ...$A ): GDImageUp
 	{
 		$this -> _mime_type = $A;
 		
 		return $this;
 	}
-	public function ImageSize( int $W, int $H )
+	public function ImageSize( int $W, int $H ): GDImageUp
 	{
 		$this -> _width = $W;
 		$this -> _height = $H;
 		
 		return $this;
 	}
-	public function SaveDirectory( string $DIR )
+	public function SaveDirectory( string $DIR ): GDImageUp
 	{
 		$this -> _directory = "{$_SERVER['DOCUMENT_ROOT']}/{$DIR}";
 		
 		return $this;
 	}
-	public function SaveName( string $NAME )
+	public function SaveName( string $NAME ): GDImageUp
 	{
 		$this -> _name = $NAME;
 		
