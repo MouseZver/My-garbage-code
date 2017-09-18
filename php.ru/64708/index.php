@@ -18,23 +18,15 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 	{
 		$E['undefined'] = 'Undefined inputs :(';
 	}
-	if ( in_array ( FALSE, [ $INPUTS['group1w'], $INPUTS['name'] ] ) )
+	if ( in_array ( FALSE, [ $INPUTS['group1w'], $INPUTS['name'] ], TRUE ) )
 	{
 		$E['name'] = 'Пожалуйста, введите имя, содержащее OLOLO.';
 	}
-	if ( $INPUTS['email'] === NULL )
-	{
-		$E['email'] = 'Undefined email :(';
-	}
-	elseif ( $INPUTS['email'] === FALSE )
+	if ( $INPUTS['email'] === FALSE )
 	{
 		$E['email'] = 'Адрес электронной почты должен быть валидным.';
 	}
-	if ( $INPUTS['select'] === NULL )
-	{
-		$E['select'] = 'Undefined select :(';
-	}
-	elseif ( $INPUTS['select'] === FALSE )
+	if ( $INPUTS['select'] === FALSE )
 	{
 		$E['select'] = 'Выберите код телефона.';
 	}
