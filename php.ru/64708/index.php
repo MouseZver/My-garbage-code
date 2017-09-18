@@ -14,7 +14,7 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 	
 	$E = [];
 	
-	if ( in_array ( NULL, $INPUTS ) )
+	if ( in_array ( NULL, $INPUTS, TRUE ) )
 	{
 		$E['undefined'] = 'Undefined inputs :(';
 	}
