@@ -92,7 +92,7 @@ return new class ( $params ) implements LermaDrivers
 	public function __call( $method, $arguments )
 	{
 		return call_user_func_array ( [ 
-			( method_exists ( $this, $method ) ? $this : $this -> statement ), 
+			$this -> statement, 
 			$method 
 		], $arguments );
 	}
