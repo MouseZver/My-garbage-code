@@ -37,7 +37,7 @@ return new class ( $params ) implements LermaDrivers
 		
 		return $this;
 	}
-	public function execute( array $arguments = [] )
+	public function execute( array $arguments )
 	{
 		if ( !is_a ( $this -> statement, PDOStatement::class ) )
 		{
