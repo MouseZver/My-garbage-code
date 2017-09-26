@@ -6,7 +6,7 @@ interface LermaDrivers
 	public function prepare( string $sql ): LermaDrivers;
 	
 	# При использовании с постановлением query, выдаст ошибку "Not execute"
-	public function execute( array $arguments = [] );
+	public function execute( array $arguments );
 	
 	/*
 	NUM 	- 1
