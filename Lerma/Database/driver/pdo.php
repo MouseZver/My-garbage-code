@@ -1,6 +1,8 @@
 <?php
 
-return new class ( $params ) implements LermaDrivers
+use Aero\Interfaces\LermaDrivers;
+
+return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 {
 	private $connect;
 	private $statement;
@@ -37,7 +39,7 @@ return new class ( $params ) implements LermaDrivers
 		
 		return $this;
 	}
-	public function execute( array $arguments )
+	public function execute( array $arguments = [] )
 	{
 		if ( !is_a ( $this -> statement, PDOStatement::class ) )
 		{
@@ -89,11 +91,12 @@ return new class ( $params ) implements LermaDrivers
 				throw new Exception( 'Invalid fetch_style ' . $fetch_style . ' is not switch' );
 		}
 	}
+	public function InsertId(): int
+	{
+		return PDO::lastInsertId();
+	}
 	public function __call( $method, $arguments )
 	{
-		return call_user_func_array ( [ 
-			$this -> statement, 
-			$method 
-		], $arguments );
+		return ( method_exists ( $this, $method ) ? $this : $this -> statement ) -> $method( ...$arguments );
 	}
 };

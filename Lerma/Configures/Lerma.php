@@ -1,12 +1,19 @@
 <?php
 
-return new class
+namespace Aero\Configures;
+
+use PDO;
+
+class Lerma
 {
 	private const USER = 'root';
 	private const PASSWORD = '';
 	
 	# Назначение драйвера для подключения базы данных
-	public $driver = mysqli::class;
+	public $driver = 'mysqli';
+	
+	# Класс для обработки запроса
+	public $migrate = 'mysql';
 	
 	# Параметры для драйвера mysqli
 	public $mysqli = [

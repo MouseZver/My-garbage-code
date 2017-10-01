@@ -2,12 +2,12 @@
 
 error_reporting ( E_ALL | E_STRICT );
 
-$lerma = require ( dirname ( __FILE__, 3 ) . '/Interfaces/Lerma/IDrivers.php' );
-$lerma = require ( dirname ( __FILE__, 3 ) . '/Configures/Lerma.php' );
-$params = $lerma -> {$lerma -> driver};
+require ( dirname ( __FILE__, 3 ) . '/Interfaces/Lerma/IDrivers.php' );
+require ( dirname ( __FILE__, 3 ) . '/Configures/Lerma.php' );
 
+$Lerma = new Aero\Configures\Lerma;
 
-$a = require $lerma -> driver . '.php';
+$a = require $Lerma -> driver . '.php';
 
 $s = $a -> prepare( 'SELECT * FROM usraccount WHERE id = ?' ) -> execute( [ 5 ] ) -> rowCount();
 

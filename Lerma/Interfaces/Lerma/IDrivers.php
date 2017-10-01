@@ -1,5 +1,7 @@
 <?php
 
+namespace Aero\Interfaces;
+
 interface LermaDrivers
 {
 	public function query( string $sql ): LermaDrivers;
@@ -16,4 +18,5 @@ interface LermaDrivers
 	*/
 	public function fetch ( int $fetch_style = 3 );
 	public function fetchAll( int $fetch_style = 3 );
+	public function InsertId(): int;
 }

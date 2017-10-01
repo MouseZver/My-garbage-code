@@ -1,6 +1,8 @@
 <?php
 
-return new class ( $params ) implements LermaDrivers
+use Aero\Interfaces\LermaDrivers;
+
+return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 {
 	private $connect;
 	private $statement;
@@ -85,7 +87,6 @@ return new class ( $params ) implements LermaDrivers
 		$arguments = array_merge ( [ implode ( '', $types ) ], $a );
 		
 		$this -> statement -> bind_param( ...$arguments );
-		#call_user_func_array ( [ $this -> statement, 'bind_param' ],  );
 		
 		$bool = $this -> statement -> execute();
 		$this -> result = $this -> statement -> get_result();
@@ -148,6 +149,10 @@ return new class ( $params ) implements LermaDrivers
 	public function rowCount(): int
 	{
 		return $this -> result() -> num_rows;
+	}
+	public function InsertId(): int
+	{
+		return $this -> result() -> insert_id;
 	}
 	public function __call( $method, $arguments )
 	{
