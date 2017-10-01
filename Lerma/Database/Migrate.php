@@ -14,7 +14,7 @@ class Migrate
 	{
 		$this -> migrate = ( $Lerma = new $name() ) -> migrate;
 		
-		$driverPath = Aero::Separator( "/Aero/Database/driver/{$Lerma -> driver}.php" );
+		$driverPath = 'driver' . DIRECTORY_SEPARATOR . {$Lerma -> driver} . '.php';
 		
 		if ( !file_exists ( $driverPath ) )
 		{
