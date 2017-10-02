@@ -5,7 +5,7 @@
 ***
 Скопируйте библиотеку Lerma в папку вашего фреймворка \ ядро.
 Отредактируйте или создайте условия для пространств имен.
-NameSpaces:
+#### NameSpaces:
 ```PHP
 const NAMESPACESMAP = [
 	'Lerma\Interfaces\LermaDrivers' => 'Lerma\Interfaces\Lerma\IDrivers'
@@ -119,10 +119,10 @@ $statement = Lerma::prepare(
 ***
 ### Константы ( стандартные ):
 ***
-Lerma::FETCH_NUM
-Lerma::FETCH_ASSOC
-Lerma::FETCH_BOTH
-Lerma::FETCH_OBJ
+- Lerma::FETCH_NUM
+- Lerma::FETCH_ASSOC
+- Lerma::FETCH_BOTH
+- Lerma::FETCH_OBJ
 ###### Замечание: возвращает результат в BOTH параметре без использования одной из перечисленных констант.
 ***
 ### Синтаксис:
