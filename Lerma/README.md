@@ -134,3 +134,5 @@ Lerma::prepare( [ ..., ... ], [ params... ] ) -> fetch();
 $Lerma = Lerma::prepare( [ 'INSERT INTO...', ... ], [ [ params... ], [ params... ], ...multi ] );
 $Lerma -> InsertId();
 ```
+***
+https://php.ru/forum/threads/66098/
