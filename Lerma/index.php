@@ -27,7 +27,7 @@ spl_autoload_register ( function ( $name )
 */
 Lerma::prepare( 'INSERT INTO lerma ( name ) VALUES ( ? )', [[ 'aaaa' ], [ 'dgdf' ], [ 'awefaw' ], [ 'dszvdszfsf' ], [ 'd' ], [ 'rrrrr' ]] );
 
-# Познаем крайний индентификатор
+# Познаем крайний идентификатор
 echo Lerma::InsertID() . PHP_EOL;
 
 
