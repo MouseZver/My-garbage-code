@@ -5,11 +5,16 @@ namespace Aero\Database;
 class Lerma extends Migrate
 {
 	public const 
-		FETCH_NUM		= 686,
-		FETCH_ASSOC		= 667,
-		FETCH_OBJ		= 625,
+		FETCH_NUM		= 1,
+		FETCH_ASSOC		= 2,
+		FETCH_OBJ		= 4,
 		FETCH_BIND		= 663,
-		FETCH_COLUMN	= 265;
+		FETCH_COLUMN	= 265,
+		FETCH_KEY_PAIR	= 307,
+		FETCH_NAMED		= 173,
+		FETCH_UNIQUE	= 333,
+		FETCH_GROUP		= 428,
+		FETCH_FUNC		= 586;
 	
 	/* public static function select( array $execute, callable $callable )
 	{

@@ -58,7 +58,7 @@ class Migrate
 	}
 	protected function isMulti( array $array )
 	{
-		if ( is_array ( $array[0] ) )
+		if ( is_array ( current ( $array ) ) )
 		{
 			foreach ( $array AS $items )
 			{
