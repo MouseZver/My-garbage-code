@@ -1,6 +1,7 @@
 <?php
 
 use Aero\Interfaces\LermaDrivers;
+use Aero\Database\Lerma AS Lerma;
 
 return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 {
@@ -124,41 +125,39 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 		
 		return ( $this -> statement -> field_count === 0 ? $bool : $this );
 	}
-	public function fetch( int $fetch_style = 686, $callable = null )
+	public function fetch( int $fetch_style = Lerma::FETCH_NUM, $fetch_argument = null )
 	{
 		switch ( $fetch_style )
 		{
-			case 686:
+			case Lerma::FETCH_NUM:
 				return $this -> result() -> fetch_array( MYSQLI_NUM );
 			break;
-			case 667:
+			case Lerma::FETCH_ASSOC:
 				return $this -> result() -> fetch_array( MYSQLI_ASSOC );
 			break;
-			case 625:
+			case Lerma::FETCH_OBJ:
 				return $this -> result() -> fetch_object();
 			break;
-			case 663:
-			case 927:
+			case Lerma::FETCH_BIND:
+			case Lerma::FETCH_BIND | Lerma::FETCH_COLUMN:
 				if ( !$this -> bind() -> fetch() )
 				{
-					return $this -> bind_result = null;
+					return $this -> bind_result = false;
 				}
 				
-				switch ( $fetch_style )
+				if ( $fetch_style === ( Lerma::FETCH_BIND | Lerma::FETCH_COLUMN ) )
 				{
-					case 927:
-						if ( $this -> statement -> field_count !== 1 )
-						{
-							throw new Exception( 'the number of fields must be one' );
-						}
-						
-						return $this -> bind_result[0] ?? null;
-					break;
+					if ( $this -> statement -> field_count !== 1 )
+					{
+						throw new Exception( 'the number of fields must be one' );
+					}
+					
+					return $this -> bind_result[0];
 				}
 				
 				return $this -> bind_result;
 			break;
-			case 265:
+			case Lerma::FETCH_COLUMN:
 				if ( $this -> statement -> field_count !== 1 )
 				{
 					throw new Exception( 'the number of fields must be one' );
@@ -166,29 +165,135 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 				
 				return $this -> result() -> fetch_array( MYSQLI_NUM )[0];
 			break;
-			case 0000:
-				return $callable( ...$this -> result() -> fetch_array( MYSQLI_NUM )[0] );
+			case Lerma::FETCH_KEY_PAIR: # column1 => column2
+				if ( $this -> statement -> field_count !== 2 )
+				{
+					throw new Exception( 'the number of fields must be two' );
+				}
+				
+				if ( ( $items = $this -> result() -> fetch_array( MYSQLI_NUM ) ) === null )
+				{
+					return null;
+				}
+				
+				[ $key, $value ] = $items;
+				
+				return [ $key => $value ];
 			break;
+			case Lerma::FETCH_FUNC:
+				if ( !is_callable ( $fetch_argument ) )
+				{
+					throw new Exception( 'Invalid argument2 is not type callable' );
+				}
+				
+				if ( ( $items = $this -> result() -> fetch_array( MYSQLI_NUM ) ) === null )
+				{
+					return null;
+				}
+				
+				return $fetch_argument( ...$items );
+			break;
+			/* case Lerma::FETCH_CLASS:
+				if ( !is_string ( $fetch_argument )  )
+				{
+					throw new Exception( 'Invalid argument2 is not type string' );
+				}
+				
+				$RefClass = ( new ReflectionClass( $fetch_argument ) ) -> newInstanceWithoutConstructor();
+				
+			break; */
 			default:
 				throw new Exception( sprintf ( 'Invalid fetch_style %s is not switch', $fetch_style ) );
 		}
 	}
-	public function fetchAll( int $fetch_style = 686 ): array
+	public function fetchAll( int $fetch_style = 1, $fetch_argument = null ): array
 	{
 		switch ( $fetch_style )
 		{
-			case 686:
+			case Lerma::FETCH_NUM:
 				return $this -> result() -> fetch_all( MYSQLI_NUM );
 			break;
-			case 667:
+			case Lerma::FETCH_ASSOC:
 				return $this -> result() -> fetch_all( MYSQLI_ASSOC );
 			break;
-			case 625:
-			case 663:
-			case 265:
+			case Lerma::FETCH_OBJ:
+			case Lerma::FETCH_COLUMN:
+			case Lerma::FETCH_FUNC:
 				$all = [];
 				
-				while ( $res = $this -> fetch( $fetch_style ) ) { $all[] = $res; }
+				while ( $res = $this -> fetch( $fetch_style, $fetch_argument ) ) { $all[] = $res; }
+				
+				return $all;
+			break;
+			case Lerma::FETCH_KEY_PAIR:
+			case Lerma::FETCH_KEY_PAIR | Lerma::FETCH_NAMED:
+				if ( $this -> statement -> field_count !== 2 )
+				{
+					throw new Exception( 'the number of fields must be two' );
+				}
+				
+				$all = [];
+				
+				while ( [ $a, $b ] = $this -> result() -> fetch_array( MYSQLI_NUM ) ) 
+				{
+					if ( $fetch_style === ( Lerma::FETCH_KEY_PAIR | Lerma::FETCH_NAMED ) && isset ( $all[$a] ) )
+					{
+						if ( is_array ( $all[$a] ) )
+						{
+							$all[$a][] = $b;
+						}
+						else
+						{
+							$all[$a] = [ $all[$a], $b ];
+						}
+					}
+					else
+					{
+						$all[$a] = $b;
+					}
+				}
+				
+				return $all;
+			break;
+			case Lerma::FETCH_UNIQUE:
+				if ( $this -> statement -> field_count < 2 )
+				{
+					throw new Exception( 'the number of fields must be min two' );
+				}
+				
+				$all = [];
+				
+				foreach ( $this -> result() -> fetch_all( MYSQLI_NUM ) AS $s ) { $all[array_shift ( $s )] = $s; }
+				
+				return $all;
+			break;
+			case Lerma::FETCH_GROUP:
+				if ( $this -> statement -> field_count < 2 )
+				{
+					throw new Exception( 'the number of fields must be min two' );
+				}
+				
+				$all = [];
+				
+				foreach ( $this -> result() -> fetch_all( MYSQLI_ASSOC ) AS $s ) 
+				{
+					$all[array_shift ( $s )][] = $s;
+				}
+				
+				return $all;
+			break;
+			case Lerma::FETCH_GROUP | Lerma::FETCH_COLUMN:
+				if ( $this -> statement -> field_count !== 2 )
+				{
+					throw new Exception( 'the number of fields must be two' );
+				}
+				
+				$all = [];
+				
+				foreach ( $this -> result() -> fetch_all( MYSQLI_NUM ) AS $s ) 
+				{
+					$all[array_shift ( $s )][] = $s[0];
+				}
 				
 				return $all;
 			break;
