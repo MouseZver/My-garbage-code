@@ -64,7 +64,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 		$this -> result = null;
 		$this -> bind_result = [];
 		
-		if ( $this -> statement !== null )
+		if ( !in_array ( $this -> statement, [ null, true, false ], true ) )
 		{
 			$this -> statement -> close();
 		}
@@ -149,7 +149,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 				{
 					if ( $this -> statement -> field_count !== 1 )
 					{
-						throw new Exception( 'the number of fields must be one' );
+						throw new Exception( 'Требуется выбрать только одну колонку' );
 					}
 					
 					return $this -> bind_result[0];
@@ -160,7 +160,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 			case Lerma::FETCH_COLUMN:
 				if ( $this -> statement -> field_count !== 1 )
 				{
-					throw new Exception( 'the number of fields must be one' );
+					throw new Exception( 'Требуется выбрать только одну колонку' );
 				}
 				
 				return $this -> result() -> fetch_array( MYSQLI_NUM )[0];
@@ -168,7 +168,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 			case Lerma::FETCH_KEY_PAIR: # column1 => column2
 				if ( $this -> statement -> field_count !== 2 )
 				{
-					throw new Exception( 'the number of fields must be two' );
+					throw new Exception( 'Требуется выбрать только две колонки' );
 				}
 				
 				if ( ( $items = $this -> result() -> fetch_array( MYSQLI_NUM ) ) === null )
@@ -193,20 +193,39 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 				
 				return $fetch_argument( ...$items );
 			break;
-			/* case Lerma::FETCH_CLASS:
-				if ( !is_string ( $fetch_argument )  )
+			case Lerma::FETCH_CLASS:
+			case Lerma::FETCH_CLASSTYPE:
+				if ( !is_string ( $fetch_argument ) && Lerma::FETCH_CLASSTYPE !== $fetch_style )
 				{
 					throw new Exception( 'Invalid argument2 is not type string' );
 				}
+				elseif ( Lerma::FETCH_CLASSTYPE === $fetch_style && $this -> statement -> field_count < 2 )
+				{
+					throw new Exception( 'Допустимое кол - во выбраных колонок не менее двух' );
+				}
 				
-				$RefClass = ( new ReflectionClass( $fetch_argument ) ) -> newInstanceWithoutConstructor();
+				if ( ( $items = $this -> result() -> fetch_array( MYSQLI_ASSOC ) ) === null )
+				{
+					return null;
+				}
 				
-			break; */
+				$RefClass = ( new ReflectionClass( ( Lerma::FETCH_CLASSTYPE === $fetch_style ?
+					array_shift ( $items ) : $fetch_argument ) ) ) -> newInstanceWithoutConstructor();
+				
+				foreach ( $items AS $name => $item )
+				{
+					$RefClass -> $name = $item;
+				}
+				
+				$RefClass -> __construct();
+				
+				return $RefClass;
+			break;
 			default:
 				throw new Exception( sprintf ( 'Invalid fetch_style %s is not switch', $fetch_style ) );
 		}
 	}
-	public function fetchAll( int $fetch_style = 1, $fetch_argument = null ): array
+	public function fetchAll( int $fetch_style = Lerma::FETCH_NUM, $fetch_argument = null ): array
 	{
 		switch ( $fetch_style )
 		{
@@ -219,6 +238,8 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 			case Lerma::FETCH_OBJ:
 			case Lerma::FETCH_COLUMN:
 			case Lerma::FETCH_FUNC:
+			case Lerma::FETCH_CLASS:
+			case Lerma::FETCH_CLASSTYPE:
 				$all = [];
 				
 				while ( $res = $this -> fetch( $fetch_style, $fetch_argument ) ) { $all[] = $res; }
@@ -229,7 +250,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 			case Lerma::FETCH_KEY_PAIR | Lerma::FETCH_NAMED:
 				if ( $this -> statement -> field_count !== 2 )
 				{
-					throw new Exception( 'the number of fields must be two' );
+					throw new Exception( 'Требуется выбрать только две колонки' );
 				}
 				
 				$all = [];
@@ -256,21 +277,43 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 				return $all;
 			break;
 			case Lerma::FETCH_UNIQUE:
+			case Lerma::FETCH_CLASSTYPE | Lerma::FETCH_UNIQUE:
 				if ( $this -> statement -> field_count < 2 )
 				{
-					throw new Exception( 'the number of fields must be min two' );
+					throw new Exception( 'Допустимое кол - во выбраных колонок не менее двух' );
 				}
 				
 				$all = [];
 				
-				foreach ( $this -> result() -> fetch_all( MYSQLI_NUM ) AS $s ) { $all[array_shift ( $s )] = $s; }
+				foreach ( $this -> result() -> fetch_all( MYSQLI_ASSOC ) AS $items )
+				{
+					if ( ( Lerma::FETCH_CLASSTYPE | Lerma::FETCH_UNIQUE ) === $fetch_style )
+					{
+						$class = array_shift ( $items );
+						
+						$RefClass = ( $c = new ReflectionClass( $class ) ) -> newInstanceWithoutConstructor();
+						
+						foreach ( $items AS $name => $item )
+						{
+							$RefClass -> $name = $item;
+						}
+						
+						$RefClass -> __construct();
+						
+						$all[( $fetch_argument === true ? $c -> getShortName() : $class )] = $RefClass;
+					}
+					else
+					{
+						$all[array_shift ( $items )] = $items;
+					}
+				}
 				
 				return $all;
 			break;
 			case Lerma::FETCH_GROUP:
 				if ( $this -> statement -> field_count < 2 )
 				{
-					throw new Exception( 'the number of fields must be min two' );
+					throw new Exception( 'Допустимое кол - во выбраных колонок не менее двух' );
 				}
 				
 				$all = [];
@@ -285,7 +328,7 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 			case Lerma::FETCH_GROUP | Lerma::FETCH_COLUMN:
 				if ( $this -> statement -> field_count !== 2 )
 				{
-					throw new Exception( 'the number of fields must be two' );
+					throw new Exception( 'Требуется выбрать только две колонки' );
 				}
 				
 				$all = [];
@@ -301,10 +344,15 @@ return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 				throw new Exception( sprintf ( 'Invalid fetch_style %s is not switch', $fetch_style ) );
 		}
 	}
-	public function fetchColumn()
+/* 	public function fetchColumn()
 	{
-		return $this -> result() -> fetch_array( MYSQLI_NUM )[0];
-	}
+		if ( $this -> statement -> field_count !== 1 )
+		{
+			throw new Exception( 'Требуется выбрать только одну колонку' );
+		}
+		
+		return $this -> result() -> fetch_array( MYSQLI_NUM )[0] ?? null;
+	} */
 	public function rowCount(): int
 	{
 		return $this -> result() -> num_rows;

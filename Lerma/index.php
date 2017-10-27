@@ -10,7 +10,8 @@ spl_autoload_register ( function ( $name )
 		Aero\Configures\Lerma::class		=> 'Configures\Lerma',
 		Aero\Database\Lerma::class			=> 'Database\Lerma',
 		Aero\Database\Migrate::class		=> 'Database\Migrate',
-		Aero\Interfaces\LermaDrivers::class	=> 'Interfaces\Lerma\IDrivers'
+		Aero\Interfaces\LermaDrivers::class	=> 'Interfaces\Lerma\IDrivers',
+		Aero\test\Aero::class				=> 'Aero'
 	];
 	
 	include strtr ( ( $LermaSpace[$name] ?? $name ), '\\', DIRECTORY_SEPARATOR ) . '.php';
@@ -25,35 +26,156 @@ spl_autoload_register ( function ( $name )
 		...   - n
 	]
 */
-Lerma::prepare( 'INSERT INTO lerma ( name ) VALUES ( ? )', [[ 'aaaa' ], [ 'dgdf' ], [ 'awefaw' ], [ 'dszvdszfsf' ], [ 'd' ], [ 'rrrrr' ]] );
+/* Lerma::prepare( 'INSERT INTO lerma ( name, num ) VALUES ( ?,? )', [
+	1 => [ 'Aero', 111 ],
+	2 => [ 'Lerma', 111 ],
+	3 => [ 'Migrate', 111 ],
+	4 => [ 'Database', 111 ],
+	5 => [ 'Configures', 222 ],
+	6 => [ 'Interfaces', 333 ],
+	7 => [ 'LermaDrivers', 333 ],
+] ); */
 
-# Познаем крайний идентификатор
-echo Lerma::InsertID() . PHP_EOL;
+Lerma::query( [ 'UPDATE lerma SET name = "%s" WHERE id = 1', quotemeta ( Aero\test\Aero::class ) ] );
+
+print_r ( Lerma::query( 'SELECT name, id, num FROM lerma LIMIT 1' ) -> fetchAll( Lerma::FETCH_CLASSTYPE | Lerma::FETCH_UNIQUE, [ true, true ] ) );
 
 
 
-# пакуем весь результат, запрашивая все айдишки с возвратом числовым индексом
-$ids = Lerma::query( 'SELECT id FROM lerma' ) -> fetchAll( Lerma::FETCH_NUM );
+/* fetch()
+	FETCH_NUM
+	FETCH_ASSOC
+	FETCH_OBJ
+	FETCH_BIND
+	FETCH_BIND | FETCH_COLUMN
+	FETCH_COLUMN
+	FETCH_KEY_PAIR
+	FETCH_FUNC
+	FETCH_CLASS
+	FETCH_CLASSTYPE
 
-# Можно и фантазией пошалить
-$r = Lerma::prepare( [ 'SELECT name FROM %s WHERE id BETWEEN ? AND ?', 'lerma' ], [ 10,20 ] );
-#echo $r -> fetchColumn();
+fetchAll()
+	FETCH_NUM
+	FETCH_ASSOC
+	FETCH_OBJ
+	FETCH_COLUMN
+	FETCH_KEY_PAIR
+	FETCH_KEY_PAIR | FETCH_NAMED
+	FETCH_UNIQUE
+	FETCH_GROUP
+	FETCH_GROUP | FETCH_COLUMN
+	FETCH_FUNC
+	FETCH_CLASS
+	FETCH_CLASSTYPE
+	Lerma::FETCH_CLASSTYPE | Lerma::FETCH_UNIQUE*/
 
 
-/*
-	Господа: прошлый запрос завис на сервере. В результате новенького запроса, старенький уйдет на покой автоматом.
-	
-	Биндим результат напрямую с сервера
-*/
-$lerma = Lerma::prepare( [ 'SELECT CONCAT ( id, " %2$X ", name ) FROM %s WHERE id BETWEEN ? AND ?', 'lerma' , 666 ], [ 1,12 ] );
 
-while ( $concat = $lerma -> fetch( Lerma::FETCH_BIND | Lerma::FETCH_COLUMN ) )
+/* 
+Обновляем кое что...
+Lerma::query( [ 'UPDATE lerma SET name = "%s" WHERE id = 1', quotemeta ( Aero\test\Aero::class ) ] );
+
+Создаем наш тестовый класс... с наследовательностью. Aero.php
+[PHP]
+<?php
+
+namespace Aero\test;
+
+class Bar
 {
-	/* ..алилуя.. */
-	echo $concat . PHP_EOL;
+	public function __construct()
+	{
+		$this -> num = $this -> num + 3;
+	}
 }
+class Aero extends Bar
+{
+	protected $id;
+	
+	public function __set( $name, $value )
+	{
+		$this -> $name = $value;
+	}
+}
+[/PHP]
 
-$a = Lerma::query( 'SELECT id FROM lerma LIMIT 5' ) -> fetchAll( Lerma::FETCH_COLUMN );
-$b = Lerma::query( 'SELECT id FROM lerma LIMIT 5' ) -> fetchAll( Lerma::FETCH_NUM );
+Присваивает результат свойствам заданного класса, после запускает конструктор.
+[PHP]
+print_r ( Lerma::query( 'SELECT name, id, num FROM lerma LIMIT 3' ) -> fetchAll( Lerma::FETCH_CLASS, Aero\test\Aero::class ) );
+[/PHP]
+[CODE]
+Array
+(
+    [0] => Aero\test\Aero Object
+        (
+            [id:protected] => 1
+            [name] => Aero\test\Aero
+            [num] => 114
+        )
 
-var_dump($a,$b);
+    [1] => Aero\test\Aero Object
+        (
+            [id:protected] => 2
+            [name] => Lerma
+            [num] => 114
+        )
+
+    [2] => Aero\test\Aero Object
+        (
+            [id:protected] => 3
+            [name] => Migrate
+            [num] => 114
+        )
+)
+[/CODE]
+
+Так же но, наименование класса берется с первой колонки. С остальных присваивает свойствам результат.
+[PHP]
+print_r ( Lerma::query( 'SELECT name, id, num FROM lerma LIMIT 1' ) -> fetchAll( Lerma::FETCH_CLASSTYPE ) );
+[/PHP]
+[CODE]
+Array
+(
+    [0] => Aero\test\Aero Object
+        (
+            [id:protected] => 1
+            [num] => 114
+        )
+)
+[/CODE]
+
+Добавление Юникью константы приводит еще к записи наименования класса в индекс результата
+[PHP]
+print_r ( Lerma::query( 'SELECT name, id, num FROM lerma LIMIT 1' ) -> fetchAll( Lerma::FETCH_CLASSTYPE | Lerma::FETCH_UNIQUE ) );
+[/PHP]
+[CODE]
+Array
+(
+    [Aero\test\Aero] => Aero\test\Aero Object
+        (
+            [id:protected] => 1
+            [num] => 114
+        )
+)
+[/CODE]
+
+Если задать второй параметр true, в индекс присвоиться лишь само имя класса
+[CODE]
+Array
+(
+    [Aero] => Aero\test\Aero Object
+        (
+            [id:protected] => 1
+            [num] => 114
+        )
+)
+[/CODE]
+
+
+[PHP]
+
+[/PHP]
+[CODE]
+
+[/CODE]
+ */

@@ -2,7 +2,7 @@
 
 namespace Aero\Database;
 
-class Lerma extends Migrate
+final class Lerma extends Migrate
 {
 	public const 
 		FETCH_NUM		= 1,
@@ -14,7 +14,9 @@ class Lerma extends Migrate
 		FETCH_NAMED		= 173,
 		FETCH_UNIQUE	= 333,
 		FETCH_GROUP		= 428,
-		FETCH_FUNC		= 586;
+		FETCH_FUNC		= 586,
+		FETCH_CLASS		= 977,
+		FETCH_CLASSTYPE	= 473;
 	
 	/* public static function select( array $execute, callable $callable )
 	{
