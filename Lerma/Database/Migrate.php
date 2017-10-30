@@ -18,7 +18,7 @@ class Migrate
 		
 		if ( !file_exists ( __DIR__ . DIRECTORY_SEPARATOR . $driverPath ) )
 		{
-			throw new \Exception( 'Драйвер Lerma не найден. ' . $driverPath );
+			throw new \Exception( sprintf ( 'Драйвер Лермы не найден. %s', $driverPath ) );
 		}
 		
 		$this -> driver = require $driverPath;

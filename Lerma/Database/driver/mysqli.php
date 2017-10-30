@@ -1,7 +1,7 @@
 <?php
 
+use Aero\Lerma;
 use Aero\Interfaces\LermaDrivers;
-use Aero\Database\Lerma AS Lerma;
 
 return new class ( $Lerma -> {$Lerma -> driver} ) implements LermaDrivers
 {
