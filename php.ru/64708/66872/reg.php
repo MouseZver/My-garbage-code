@@ -70,26 +70,28 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' )
 	{
 		echo implode ( '<br>', $error );
 	}
-	
-	$password_hash = password_hash ( $INPUTS[Aero::$app -> Auth -> form -> pass], PASSWORD_DEFAULT );
-	
-	Lerma::prepare( [ 'INSERT INTO %s ( username, email, password, datareg, online ) VALUES ( ?,?, "%s", %d, %3$d )', 
-		Aero::$app -> Auth -> form -> table,
-		$password_hash,
-		$_SERVER['REQUEST_TIME']
-	], [ 
-		$INPUTS[Aero::$app -> Auth -> form -> name], 
-		strtolower ( $INPUTS[Aero::$app -> Auth -> form -> email] )
-	] );
-	
-	$hash = md5 ( Lerma::InsertId() . $INPUTS[Aero::$app -> Auth -> form -> name] . $password_hash );
-	
-	Lerma::query( [ 'UPDATE %s SET hash = "%s" WHERE id = %d', Aero::$app -> Auth -> form -> table, $hash, Lerma::InsertId() ] );
-	
-	setcookie ( Aero::$app -> Auth -> data -> cookie, $hash, strtotime ( Aero::$app -> Auth -> data -> time ), '/' );
-	
-	header ( 'Location: /?' . $INPUTS[Aero::$app -> Auth -> form -> name] );
-	exit;
+	else
+	{
+		$password_hash = password_hash ( $INPUTS[Aero::$app -> Auth -> form -> pass], PASSWORD_DEFAULT );
+		
+		Lerma::prepare( [ 'INSERT INTO %s ( username, email, password, datareg, online ) VALUES ( ?,?, "%s", %d, %3$d )', 
+			Aero::$app -> Auth -> form -> table,
+			$password_hash,
+			$_SERVER['REQUEST_TIME']
+		], [ 
+			$INPUTS[Aero::$app -> Auth -> form -> name], 
+			strtolower ( $INPUTS[Aero::$app -> Auth -> form -> email] )
+		] );
+		
+		$hash = md5 ( Lerma::InsertId() . $INPUTS[Aero::$app -> Auth -> form -> name] . $password_hash );
+		
+		Lerma::query( [ 'UPDATE %s SET hash = "%s" WHERE id = %d', Aero::$app -> Auth -> form -> table, $hash, Lerma::InsertId() ] );
+		
+		setcookie ( Aero::$app -> Auth -> data -> cookie, $hash, strtotime ( Aero::$app -> Auth -> data -> time ), '/' );
+		
+		header ( 'Location: /?' . $INPUTS[Aero::$app -> Auth -> form -> name] );
+		exit;
+	}
 }
 
 require Aero::Separator( '/resources/view/pages/Regform.php' );
