@@ -12,7 +12,8 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' )
 {
 	$ARGS = [
 		Aero::$app -> Auth -> form -> email => FILTER_VALIDATE_EMAIL,
-		Aero::$app -> Auth -> form -> pass => FILTER_DEFAULT
+		Aero::$app -> Auth -> form -> pass => FILTER_DEFAULT,
+		Aero::$app -> Auth -> form -> csrf -> name => FILTER_DEFAULT
 	];
 	
 	$error = [];
@@ -27,18 +28,23 @@ if ( $_SERVER['REQUEST_METHOD'] === 'POST' )
 	{
 		$error['email'] = 'Invalid is email.';
 	}
+	elseif ( !isset ( $_SESSION[Aero::$app -> Auth -> form -> csrf -> name] ) || $INPUTS[Aero::$app -> Auth -> form -> csrf -> name] !== $_SESSION[Aero::$app -> Auth -> form -> csrf -> name] )
+	{
+		$error['token'] = 'Invalid is token.';
+	}
 	else
 	{
-		$lerma = Lerma::prepare( [ 'SELECT id, username, password FROM %s WHERE email = ?', 
-			Aero::$app -> Auth -> form -> table
-		], [ strtolower ( $INPUTS[Aero::$app -> Auth -> form -> email] ) ] );
+		$lerma = Lerma::prepare( [ 'SELECT id, username, password FROM %s WHERE email = ?', Aero::$app -> Auth -> form -> table ], 
+			[ strtolower ( $INPUTS[Aero::$app -> Auth -> form -> email] ) ] );
 		
-		if ( $lerma -> rowCount() == 0 OR !password_verify ( $INPUTS[Aero::$app -> Auth -> form -> pass], ( $account = $lerma -> fetch( Lerma::FETCH_OBJ ) ) -> password ) )
+		if ( $lerma -> rowCount() === 0 || !password_verify ( $INPUTS[Aero::$app -> Auth -> form -> pass], ( $account = $lerma -> fetch( Lerma::FETCH_OBJ ) ) -> password ) )
 		{
 			$error['data'] = 'Введенные данные не верны.';
 		}
 	}
-
+	
+	unset ( $_SESSION[Aero::$app -> Auth -> form -> csrf -> name] );
+	
 	if ( !empty ( $error ) )
 	{
 		echo implode ( '<br>', $error );
