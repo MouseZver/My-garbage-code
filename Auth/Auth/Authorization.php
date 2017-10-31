@@ -4,7 +4,7 @@ namespace Aero\Auth;
 
 use Aero\Lerma;
 
-abstract class Authorization
+abstract class Authorization extends AuthToken
 {
 	abstract protected function isCookie(): bool;
 	abstract protected function isLogged(): bool;

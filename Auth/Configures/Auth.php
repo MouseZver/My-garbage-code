@@ -12,6 +12,10 @@ final class Auth
 		"name":"username",
 		"email":"email",
 		"pass":"password",
-		"confirm":"confirm_password"
+		"confirm":"confirm_password",
+		"csrf":{
+			"name":"aerotoken",
+			"key":"AeroPurpure"
+		}
 	}';
 }

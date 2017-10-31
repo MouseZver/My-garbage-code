@@ -20,13 +20,18 @@ final class Auth extends Authorization
 		
 		unset ( $c -> form );
 		
-		$this -> dropHash() -> data = $c;
+		$this -> data = $c;
+		$this -> dropHash();
 	}
 	public function __get( $name )
 	{
 		if ( $name === 'username' )
 		{
 			return $this -> username ?? $this -> data -> username;
+		}
+		if ( $name === 'csrf' )
+		{
+			return $this -> csrf();
 		}
 		
 		throw new \Exception( '~~ Смотри трейс #1, инвалид пришел к нам: ' . $name );
