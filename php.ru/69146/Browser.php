@@ -1,3 +1,5 @@
+<?php
+
 class Browser {
     private $_agent = '';
     private $_browser_name = '';
