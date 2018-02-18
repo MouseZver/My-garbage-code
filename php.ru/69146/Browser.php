@@ -72,9 +72,9 @@ class Browser {
 
     const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
-    public function Browser($useragent="") {
+    public function __construct( string $useragent = null ) {
         $this->reset();
-        if( $useragent != "" ) {
+        if( $useragent !== null ) {
             $this->setUserAgent($useragent);
         }
         else {
