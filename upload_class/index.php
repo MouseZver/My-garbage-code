@@ -12,8 +12,10 @@ if ( $_SERVER['REQUEST_METHOD'] == 'POST' )
 	{
 		var_dump ( $G -> ErrorMessage() );
 	}
-	
-	echo $G;
+	else
+	{
+		echo $G;
+	}
 }
 
 ?>
