@@ -19,11 +19,11 @@ class GDImageUp
 		$_name,
 		$_E = [];
 	
-	public function __construct ( string $KEY, int $SIZE = 0 )
+	public function __construct ( string $KEY, int $SIZE = self::MAX_SIZE_IMG )
 	{
 		$this -> _key = $KEY;
 		$this -> _name = basename ( $_FILES[$KEY]['name'] ?? 'NoneName' );
-		$this -> _max_size_img = ( $SIZE === 0 ? self::MAX_SIZE_IMG : $SIZE );
+		$this -> _max_size_img = $SIZE;
 	}
 	public function setMimeType( ...$A ): GDImageUp
 	{
