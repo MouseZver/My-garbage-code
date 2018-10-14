@@ -23,5 +23,5 @@ spl_autoload_register ( function ( $a )
 # выбираем рандомный класс из 6 строки
 $class = SPACES[array_rand ( SPACES )];
 
-# Юзаем
+# Юзаем выбранный класс ( но у нас не подключен же файл с ним ? обращаемся к строке 18 )
 echo new $class . $class;
