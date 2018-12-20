@@ -21,7 +21,7 @@ class GDImageUp
 	{
 		$this -> _key = $KEY;
 		$this -> _name = basename ( $_FILES[$KEY]['name'] ?? 'NoneName' );
-		$this -> _max_size_img = ( $SIZE === 0 ? self::MAX_SIZE_IMG : $SIZE );
+		$this -> _max_size_img = ( $SIZE ?: self::MAX_SIZE_IMG );
 	}
 	public function setMimeType( ...$A ): GDImageUp
 	{
